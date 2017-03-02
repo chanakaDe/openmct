@@ -425,6 +425,23 @@ define(
             }
         };
 
+        MCTTableController.prototype.lastInsertionPoint = function (searchArray, searchElement) {
+            var index = 0;
+            var lastIndex = index;
+
+            while (index >= 0 && index <= searchArray.length) {
+                if (this.$scope.sortDirection === 'desc') {
+                    lastIndex = this.binarySearch(searchArray, searchElement, 0, index);
+                    index--;
+                } else if (this.$scope.sortDirection === 'asc') {
+                    lastIndex = this.binarySearch(searchArray, searchElement, index, searchArray.length - 1);
+                    index++;
+                }
+            }
+
+            return lastIndex;
+        };
+
         /**
          * @private
          */
@@ -458,7 +475,8 @@ define(
                 index = array.length;
             } else {
                 //Sort is enabled, perform binary search to find insertion point
-                index = this.binarySearch(array, element[this.$scope.sortColumn].text, 0, array.length - 1);
+                //index = this.binarySearch(array, element[this.$scope.sortColumn].text, 0, array.length - 1);
+                index = this.lastInsertionPoint(array, element, this.$scope.sortColumn + '.text');
             }
             if (index === -1) {
                 array.unshift(element);
